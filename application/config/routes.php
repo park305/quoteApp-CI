@@ -39,6 +39,8 @@
 */
 $route['ajaxQuote'] = "homepage/ajaxQuote";
 $route['tag/(:any)'] = "homepage/tag/$1";
+$route['category/(:any)'] = "homepage/category/$1";
+
 $route['single/(:num)'] = "homepage/single/$1";
 $route['author/(:any)'] = "homepage/author/$1";
 

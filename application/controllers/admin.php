@@ -17,6 +17,13 @@ class Admin extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
+
+    public function __construct(){
+        parent::__construct();
+        $this->load->model('tag_model');
+        $this->load->model('category_model');        
+    }
+
 	public function index()
 	{
 		$data['title'] = "Admin Homepage";
@@ -26,23 +33,7 @@ class Admin extends CI_Controller {
 	}
 
 
-	public function insertCSV() {
-		$quotes = file("QuotesFromForbes.txt");
-		$quotes2 = file("QuotesFromBrainyQuote.txt");
-		$quotes = array_merge($quotes, $quotes2);
 
-
-		for ($i = 0; $i < count($quotes); $i++) {
-			$pieces = explode(";", $quotes[$i]);
-			$quote = trim($pieces[0]);
-			$author = trim($pieces[1]);
-
-			if(is_string($quote) AND is_string($author)) {
-				$data = array('quote' => $quote, 'author' => $author);
-				$this->db->insert("quotes", $data);
-			}
-		}
-	}
 
 
 	function tag_dup($tag) {
@@ -97,7 +88,6 @@ class Admin extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-
 	public function addQuote()
 	{
 		$data['title'] = "Admin : Add Quote";
@@ -130,13 +120,13 @@ class Admin extends CI_Controller {
 		//validate quoteID exists and is a #
 		if(!is_numeric($quoteID))
 			errorPage("Quote ID is not a valid number");
+		$categoryID = 1;
 		
 		$quoteRow = $this->quote_model->get_quote($quoteID);		
 		if($quoteRow == "error")
 			errorPage("Quote does not exist for this ID#");
 
 		$data['title'] = "Admin : Edit Quote";
-		$this->load->model('tag_model');
 		$this->form_validation->set_rules('quote', 'Quote', 'required|trim');
 		$this->form_validation->set_rules('author', 'Author', 'required|trim');
 		$this->form_validation->set_rules('category', 'Category', 'required|trim|callback_category_valid');
@@ -276,7 +266,6 @@ class Admin extends CI_Controller {
 
 	public function manageTags($editMsg = "")
 	{
-		$this->load->model("tag_model");
 		$data['tags'] = $this->tag_model->get_tag_array("all");		
 		$data['title'] = "Admin : Manage Tags";
 		$data['success'] = $editMsg;
@@ -292,7 +281,6 @@ class Admin extends CI_Controller {
 		if(!is_numeric($tagID))
 			errorPage("Tag ID is not a valid number");
 
-		$this->load->model("tag_model");
 		$tagrow = $this->tag_model->tag_name_by_ID(array($tagID));		
 		if(empty($tagrow))
 			errorPage("Tag does not exist for this ID#");
@@ -322,7 +310,6 @@ class Admin extends CI_Controller {
 
 	public function deleteTag($tagID = 0)
 	{
-		$this->load->model("tag_model");
 		$result = $this->tag_model->delete($tagID);
 		$this->manageTags($result);
 	}
@@ -330,7 +317,6 @@ class Admin extends CI_Controller {
 	public function addTag()
 	{
 		$data['title'] = "Admin : Add Tag";
-		$this->load->model("tag_model");
 		$this->form_validation->set_rules('tag_name', 'Tag Name', 'required|trim|callback_tag_dup');
 		$this->form_validation->set_rules('status', 'Status', 'required|trim|callback_tagstatus_valid');
 		$name = $status = "";
@@ -366,7 +352,6 @@ class Admin extends CI_Controller {
 		$data['title'] = "Admin : Manage Categories";
 		$data['success'] = $editMsg;
 		
-		$this->load->model("category_model");
 		$data['categories'] = $this->category_model->get_category_array("all");		
 		$this->load->view('templates/header', $data);
 		$this->load->view('admin/manage_categories', $data);		
@@ -378,7 +363,6 @@ class Admin extends CI_Controller {
 		if(!is_numeric($categoryID))
 			errorPage("ID is not a valid number");
 
-		$this->load->model("category_model");
 		
 
 		$row = $this->category_model->get_category($categoryID);		
@@ -411,7 +395,6 @@ class Admin extends CI_Controller {
 	public function addCategory()
 	{
 		$data['title'] = "Admin : Add Category";
-		$this->load->model("category_model");
 		$this->form_validation->set_rules('name', 'Category Name', 'required|trim|callback_category_dup');
 		$this->form_validation->set_rules('status', 'Status', 'required|trim|callback_categorystatus_valid');
 		$name = $status = "";
@@ -443,7 +426,6 @@ class Admin extends CI_Controller {
 	
 	public function deleteCategory($categoryID = 0)
 	{
-		$this->load->model("category_model");
 		$result = $this->category_model->delete($categoryID);
 		$this->manageCategories($result);
 	}

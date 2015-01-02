@@ -1,5 +1,5 @@
 <?php
-class Tag_model extends My_Model {
+class Tag_model extends MY_Model {
 
     var $name   = '';
     var $status = '';

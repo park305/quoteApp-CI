@@ -19,6 +19,13 @@ class Homepage extends CI_Controller {
 	 */
 
 	//JSON the data random quote
+
+    public function __construct(){
+        parent::__construct();
+        $this->load->model('tag_model');
+        $this->load->model('category_model');        
+    }
+
 	public function index()
 	{
 		$data['random_quote'] = $this->quote_model->random_quote();
@@ -48,9 +55,6 @@ class Homepage extends CI_Controller {
 		if(!is_numeric($quoteID)) 
 			errorPage("error here, not numeric given");
 
-		$this->load->model("category_model");
-		$this->load->model("tag_model");
-
 		$data['quoteRow'] = $this->quote_model->get_quote($quoteID);
 		if($data['quoteRow'] == "error") 
 			errorPage("error quote doesn't exist for ID given");
@@ -78,6 +82,36 @@ class Homepage extends CI_Controller {
 		$this->load->view('templates/footer');
 
 	}
+	public function category($category = "General")
+	{
+		if(!is_string($category)) 
+			errorPage("error incorrect category given");
+
+		$quotes = array();
+		$category_row = $this->category_model->get_category_by_name($category);
+		if($category_row === FALSE)
+			errorPage("could not find such category");
+		
+        $query = $this->db->get_where('quotes_relationships', array('relationType' => 'category', 'relationID' => $category_row['id']));
+        if($query->num_rows() > 0) {
+        	foreach($query->result() as $row) {
+	        	$quote = $this->quote_model->get_quote($row->quoteID);
+	        	if($quote != "error")
+	        		$quotes[] = $quote;
+        	}
+        	$data['quotes']['rows'] = $quotes;
+        	$data['quotes']['count'] = count($quotes);
+        } else {
+        	$data['quotes']['count'] = 0;
+        	$data['quotes']['rows'] = "There are no quotes for this category";
+        }
+
+		$data['title'] = "Category: " . $category;		
+		$data['category'] = $category;
+		$this->load->view('templates/header', $data);
+		$this->load->view('homepage/category', $data);		
+		$this->load->view('templates/footer');
+	}
 
 	public function tag($tagName = "General")
 	{
@@ -85,7 +119,6 @@ class Homepage extends CI_Controller {
 			errorPage("error incorrect tag given");
 
 		$quotes = array();
-		$this->load->model("tag_model");
 		$tagID = $this->tag_model->fetch_tagIDs(array($tagName));
 		if(empty($tagID))
 			errorPage("could not find such tag");

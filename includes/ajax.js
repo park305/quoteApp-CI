@@ -3,7 +3,7 @@
 
   window.onload = function () {
   buttonText = ["Next Quote", "Bring Me Another!", "What Else You Got?"];
-   document.getElementById("nextBtn").onclick = function() { makeRequest('http://127.0.0.1/quoteApp-CI/index.php/homepage/ajaxQuote'); };
+   document.getElementById("nextBtn").onclick = function() { makeRequest('/quoteApp-CI/index.php/ajaxQuote'); };
 }
   function makeRequest(url) {
     if (window.XMLHttpRequest) { // Mozilla, Safari, ...

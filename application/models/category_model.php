@@ -1,4 +1,4 @@
-<?php
+<?php
 class Category_model extends My_Model {
 
     var $name   = '';
@@ -35,6 +35,16 @@ class Category_model extends My_Model {
             }
         return $categories;
     }
+
+
+    function get_category_by_name($categoryName = "") {
+        $query = $this->db->get_where('categories', array('name' => $categoryName));        
+        if ($query->num_rows() > 0) {
+            $row = $query->row_array();
+            return $row;
+       }
+        return FALSE;
+    } 
 
     function get_category($categoryID)
     {
