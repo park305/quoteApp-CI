@@ -37,8 +37,12 @@
 | in the URL cannot be matched to a valid route.
 |
 */
+$route['ajaxQuote'] = "homepage/ajaxQuote";
+$route['tag/(:any)'] = "homepage/tag/$1";
+$route['single/(:num)'] = "homepage/single/$1";
+$route['author/(:any)'] = "homepage/author/$1";
 
-$route['default_controller'] = "welcome";
+$route['default_controller'] = "homepage";
 $route['404_override'] = '';
 
 

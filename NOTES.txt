@@ -1,0 +1,5 @@
+Altered the quotes_relationships table for a unique constraint on three columns
+ALTER TABLE quotes_relationships
+ADD CONSTRAINT relation_unique UNIQUE (quoteID, relationID, relationType)
+
+This makes it so that i don't have to check for duplicate category/tags attached to a quote in the code before updating a quote.
