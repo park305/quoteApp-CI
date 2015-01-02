@@ -3,6 +3,7 @@ class Category_model extends My_Model {
 
     var $name   = '';
     var $status = '';
+    var $db_table = "categories";
 
     function __construct()
     {
@@ -12,23 +13,12 @@ class Category_model extends My_Model {
     
     function insert_category($name, $status)
     {
-        $this->name = $name;
-        $this->status = $status;
-
-        $this->db->insert('categories', $this);
-
-        if($this->db->affected_rows() > 0) {
-            return TRUE;
-        }
-        return FALSE;        
+        return $this->insert($name, $status);
     }
 
     function update_category($name, $status, $id)
     {
-        $this->name = $name;
-        $this->status = $status;
-
-        $this->db->update('categories', $this, array('id' => $id));
+        $this->update($name, $status, $id);
     }
 
     function get_category_array($only_active = "yes")
@@ -61,9 +51,6 @@ class Category_model extends My_Model {
     }
 
 
-    function delete($categoryID) {
-        $this->delete_relation($tagID, "categories");
-    }
   
     function category_form($url, $name = "", $status = "Active") {
         if($status == "")

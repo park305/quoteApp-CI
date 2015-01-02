@@ -3,6 +3,7 @@ class Tag_model extends My_Model {
 
     var $name   = '';
     var $status = '';
+    var $db_table = "tags";
 
     function __construct()
     {
@@ -13,10 +14,7 @@ class Tag_model extends My_Model {
 
     function update_tag($name, $status, $id)
     {
-        $this->name = $name;
-        $this->status = $status;
-
-        $this->db->update('tags', $this, array('id' => $id));
+        return $this->update($name, $status, $id);
     }
 
     function get_tag_array($only_active = "yes")
@@ -70,20 +68,9 @@ class Tag_model extends My_Model {
     }
 
     function insert_tag($name, $status) {
-        $this->name = $name;
-        $this->status = $status;
-        $this->db->insert('tags', $this);
-
-        if($this->db->affected_rows() > 0) {
-            return TRUE;
-        }
-        return FALSE;
+        return $this->insert($name, $status);
     }
 
-
-    function delete($tagID) {
-        $this->delete_relation($tagID, "tags");
-    }
   
     function tag_form($url, $name = "", $status = "Active") {
         if($status == "")

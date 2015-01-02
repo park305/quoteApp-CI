@@ -1,5 +1,5 @@
 <?php
-class Quote_model extends My_Model {
+class Quote_model extends CI_Model {
 
     var $quote   = '';
     var $author = '';
