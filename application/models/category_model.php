@@ -1,5 +1,5 @@
 <?php
-class Category_model extends CI_Model {
+class Category_model extends My_Model {
 
     var $name   = '';
     var $status = '';
@@ -62,19 +62,7 @@ class Category_model extends CI_Model {
 
 
     function delete($categoryID) {
-        if(!is_numeric($categoryID))
-            errorPage("ID is not a valid #");
-        $query = $this->db->get_where('categories', array('id' => $categoryID));
-        if($query->num_rows() > 0)
-            {
-                $this->db->delete('categories', array('id' => $categoryID)); 
-                if($this->db->affected_rows() > 0)
-                    return "Category " . $categoryID . " successfully deleted";
-                else
-                    return "Error deleting " . $categoryID;
-            }
-        else
-            return "Category " . $categoryID . " does not exist, could not delete";
+        $this->delete_relation($tagID, "categories");
     }
   
     function category_form($url, $name = "", $status = "Active") {

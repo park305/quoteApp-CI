@@ -1,5 +1,5 @@
 <?php
-class Tag_model extends CI_Model {
+class Tag_model extends My_Model {
 
     var $name   = '';
     var $status = '';
@@ -82,19 +82,7 @@ class Tag_model extends CI_Model {
 
 
     function delete($tagID) {
-        if(!is_numeric($tagID))
-            errorPage("Tag ID is not a valid #");
-        $query = $this->db->get_where('tags', array('id' => $tagID));
-        if($query->num_rows() > 0)
-            {
-                $this->db->delete('tags', array('id' => $tagID)); 
-                if($this->db->affected_rows() > 0)
-                    return "Tag " . $tagID . " successfully deleted";
-                else
-                    return "Error deleting " . $tagID;
-            }
-        else
-            return "Tag " . $tagID . " does not exist, could not delete";
+        $this->delete_relation($tagID, "tags");
     }
   
     function tag_form($url, $name = "", $status = "Active") {
